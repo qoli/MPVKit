@@ -133,6 +133,20 @@ public extension MPVVideoPlayer {
         self.init(configuration: configure())
     }
 
+   private var onStateUpdatedPublisher: AnyPublisher<MPVVideoPlayer.State, Never> {
+        return PassthroughSubject()
+            .handleEvents(receiveOutput: { [weak self] state in
+                self?.playerState = state
+            })
+    }
+
+    private var onTicksUpdatedPublisher: AnyPublisher<Int, Never> {
+        return PassthroughSubject()
+            .handleEvents(receiveOutput: { [weak self] ticks in
+                self?.position = ticks
+            })
+    }
+
     /// Sets the proxy for events
     func proxy(_ proxy: MPVVideoPlayer.Proxy) -> Self {
         copy(modifying: \.proxy, with: proxy)
